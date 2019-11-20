@@ -4,7 +4,7 @@ from matplotlib import pyplot
 import numpy as np
 
 
-def task1(original_signal: Signal, original_freq, carrier_freq):
+def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
     Plotter.plot(original_signal)
     Plotter.fourier_transform(original_signal)
 
@@ -12,7 +12,7 @@ def task1(original_signal: Signal, original_freq, carrier_freq):
     Plotter.plot(modulated_signal, t_end=0.1)
     Plotter.fourier_transform(modulated_signal)
 
-    discrete_signal = Discrete(modulated_signal, 64, signal_min=min(modulated_signal.get_y()),
+    discrete_signal = Discrete(modulated_signal, k, signal_min=min(modulated_signal.get_y()),
                                signal_max=max(modulated_signal.get_y()))
     Plotter.plot(discrete_signal, t_end=0.1)
 
@@ -46,14 +46,16 @@ def task1(original_signal: Signal, original_freq, carrier_freq):
 
 original_freq = 38
 carrier_freq = 892
+k = 64
+
 noise1 = carrier_freq - 2.5 * original_freq
 noise2 = carrier_freq - 4 * original_freq
 
 original_signal = Sine(38, 1, 0, 1, discretization=10000)
-task1(original_signal, original_freq, carrier_freq)
+task1(original_signal, original_freq, carrier_freq, k=k)
 
 noised_signal1 = original_signal + Sine(noise1, 1, 0, 1, discretization=10000)
-task1(noised_signal1, original_freq, carrier_freq)
+task1(noised_signal1, original_freq, carrier_freq, k=k)
 
 noised_signal2 = original_signal + Sine(noise2, 1, 0, 1, discretization=10000)
-task1(noised_signal2, original_freq, carrier_freq)
+task1(noised_signal2, original_freq, carrier_freq, k=k)
