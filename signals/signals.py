@@ -2,8 +2,6 @@ from numpy import sin, cos, arange, pi, floor, sqrt
 from scipy.signal import butter, lfilter
 
 
-
-
 class Signal:
     def __init__(self):
         self._t = self._get_time()
@@ -110,9 +108,10 @@ class Detect(Signal):
         return self._t
 
     def _eval(self):
-            sin_out = self.source.get_y() * sin(2 * pi * self.detect_freq * self.source.get_x())
-            cos_out = self.source.get_y() * cos(2 * pi * self.detect_freq * self.source.get_x())
-            b, a = butter(2, self.filter_freq, fs=(len(self.source.get_x()) / abs(self.source.get_x()[0] - self.source.get_x()[-1])))
-            sin_out_butt = lfilter(b, a, sin_out)
-            cos_out_butt = lfilter(b, a, cos_out)
-            return sqrt(pow(sin_out_butt, 2) + pow(cos_out_butt, 2))
+        sin_out = self.source.get_y() * sin(2 * pi * self.detect_freq * self.source.get_x())
+        cos_out = self.source.get_y() * cos(2 * pi * self.detect_freq * self.source.get_x())
+        b, a = butter(2, self.filter_freq,
+                      fs=(len(self.source.get_x()) / abs(self.source.get_x()[0] - self.source.get_x()[-1])))
+        sin_out_butt = lfilter(b, a, sin_out)
+        cos_out_butt = lfilter(b, a, cos_out)
+        return sqrt(pow(sin_out_butt, 2) + pow(cos_out_butt, 2))

@@ -12,7 +12,8 @@ def task1(original_signal: Signal, original_freq, carrier_freq):
     Plotter.plot(modulated_signal, t_end=0.1)
     Plotter.fourier_transform(modulated_signal)
 
-    discrete_signal = Discrete(modulated_signal, 64, signal_min=min(modulated_signal.get_y()), signal_max=max(modulated_signal.get_y()))
+    discrete_signal = Discrete(modulated_signal, 64, signal_min=min(modulated_signal.get_y()),
+                               signal_max=max(modulated_signal.get_y()))
     Plotter.plot(discrete_signal, t_end=0.1)
 
     detect1 = Sine(carrier_freq, 1, 0, 1, discretization=10000)
@@ -36,11 +37,14 @@ def task1(original_signal: Signal, original_freq, carrier_freq):
     k = 1
     while sig_out[k] == 0:
         k = k + 1
+        if k == sig_out.__len__() - 1:
+            break
     print(detected_signal2.get_x()[k])
 
     pyplot.plot(sig_out, '.')
     # pyplot.xlim(0, 1000)
     pyplot.show()
+
 
 original_freq = 38
 carrier_freq = 892
@@ -55,5 +59,3 @@ task1(noised_signal1, original_freq, carrier_freq)
 
 noised_signal2 = original_signal + Sine(noise2, 1, 0, 1, discretization=10000)
 task1(noised_signal2, original_freq, carrier_freq)
-
-

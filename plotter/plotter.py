@@ -1,8 +1,7 @@
-from signals import signals
-from matplotlib.pyplot import figure, title, show, xlabel, ylabel
+from matplotlib.pyplot import figure
 from scipy.fftpack import fft, fftshift, fftfreq
-from numpy import linspace
-# import matplotlib.pyplot as plt
+
+from signals import signals
 
 
 class Plotter:
