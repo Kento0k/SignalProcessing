@@ -51,7 +51,7 @@ k = 64
 noise1 = carrier_freq - 2.5 * original_freq
 noise2 = carrier_freq - 4 * original_freq
 
-original_signal = Sine(38, 1, 0, 1, discretization=10000)
+original_signal = Sine(original_freq, 1, 0, 1, discretization=10000)
 task1(original_signal, original_freq, carrier_freq, k=k)
 
 noised_signal1 = original_signal + Sine(noise1, 1, 0, 1, discretization=10000)
