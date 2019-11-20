@@ -16,12 +16,10 @@ def task1(original_signal: Signal, original_freq, carrier_freq):
                                signal_max=max(modulated_signal.get_y()))
     Plotter.plot(discrete_signal, t_end=0.1)
 
-    detect1 = Sine(carrier_freq, 1, 0, 1, discretization=10000)
     detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=100)
     Plotter.plot(detected_signal, t_end=0.1)
     Plotter.fourier_transform(detected_signal)
 
-    detect2 = Sine(original_freq, 1, 0, 1, discretization=10000)
     detected_signal2 = Detect(detected_signal, original_freq, filter_freq=1)
     Plotter.plot(detected_signal2)
     Plotter.fourier_transform(detected_signal2)
