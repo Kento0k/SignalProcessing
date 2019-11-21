@@ -44,18 +44,27 @@ def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
     pyplot.show()
 
 
-original_freq = 38
-carrier_freq = 892
-k = 64
+if __name__ == '__main__':
+    ################ lab params #########################
+    original_freq = 11
+    carrier_freq = 405
+    k = 64
 
-noise1 = carrier_freq - 2.5 * original_freq
-noise2 = carrier_freq - 4 * original_freq
+    ################ othe params ####################
+    amplitude = 1
+    t_start, t_end = 0, 1
 
-original_signal = Sine(original_freq, 1, 0, 1, discretization=10000)
-task1(original_signal, original_freq, carrier_freq, k=k)
+    noise_freq_1 = carrier_freq - 2.5 * original_freq
+    noise_freq_2 = carrier_freq - 4 * original_freq
 
-noised_signal1 = original_signal + Sine(noise1, 1, 0, 1, discretization=10000)
-task1(noised_signal1, original_freq, carrier_freq, k=k)
+    ################ main part ####################
+    original_signal = Sine(original_freq, amplitude=amplitude, t_start=t_start, t_end=t_end, discretization=10000)
+    task1(original_signal, original_freq, carrier_freq, k=k)
 
-noised_signal2 = original_signal + Sine(noise2, 1, 0, 1, discretization=10000)
-task1(noised_signal2, original_freq, carrier_freq, k=k)
+    noised_signal_1 = original_signal + Sine(noise_freq_1, amplitude=amplitude, t_start=t_start, t_end=t_end,
+                                             discretization=10000)
+    task1(noised_signal_1, original_freq, carrier_freq, k=k)
+
+    noised_signal2 = original_signal + Sine(noise_freq_2, amplitude=amplitude, t_start=t_start, t_end=t_end,
+                                            discretization=10000)
+    task1(noised_signal2, original_freq, carrier_freq, k=k)
