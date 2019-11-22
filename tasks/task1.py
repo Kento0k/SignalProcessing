@@ -16,15 +16,16 @@ def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
                                signal_max=max(modulated_signal.get_y()))
     Plotter.plot(discrete_signal, t_end=0.1)
 
-    detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=100)
+    detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=50)
     Plotter.plot(detected_signal, t_end=0.1)
     Plotter.fourier_transform(detected_signal)
 
-    detected_signal2 = Detect(detected_signal, original_freq, filter_freq=1)
+    detected_signal2 = Detect(detected_signal, original_freq, filter_freq=7)
     Plotter.plot(detected_signal2)
     Plotter.fourier_transform(detected_signal2)
 
-    lbound = 3
+    lbound = max(detected_signal2.get_y()) / pow(10, 3/20)
+    print("lbound: %d" % lbound)
     sig_out = np.ones(len(detected_signal2.get_x()))
     for i in range(0, len(detected_signal2.get_x())):
         if detected_signal2.get_y()[i] <= lbound:
@@ -46,9 +47,9 @@ def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
 
 if __name__ == '__main__':
     ################ lab params #########################
-    original_freq = 11
-    carrier_freq = 405
-    k = 64
+    original_freq = 19
+    carrier_freq = 650
+    k = 1024
 
     ################ othe params ####################
     amplitude = 1

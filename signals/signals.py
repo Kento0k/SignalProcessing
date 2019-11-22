@@ -110,7 +110,7 @@ class Detect(Signal):
     def _eval(self):
         sin_out = self.source.get_y() * sin(2 * pi * self.detect_freq * self.source.get_x())
         cos_out = self.source.get_y() * cos(2 * pi * self.detect_freq * self.source.get_x())
-        b, a = butter(2, self.filter_freq,
+        b, a = butter(6, self.filter_freq,
                       fs=(len(self.source.get_x()) / abs(self.source.get_x()[0] - self.source.get_x()[-1])))
         sin_out_butt = lfilter(b, a, sin_out)
         cos_out_butt = lfilter(b, a, cos_out)
