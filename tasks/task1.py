@@ -4,11 +4,14 @@ from matplotlib import pyplot
 import numpy as np
 
 
-def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
+def task1(original_signal: Signal, original_freq, carrier_freq, k=64, noise_freq=None):
     Plotter.plot(original_signal)
     Plotter.fourier_transform(original_signal)
 
     modulated_signal = DoubleSideband(original_signal, carrier_freq)
+    if noise_freq is not None:
+        modulated_signal = modulated_signal + Sine(noise_freq, amplitude=amplitude, t_start=0, t_end=1,
+                                                discretization=10000)
     Plotter.plot(modulated_signal, t_end=0.1)
     Plotter.fourier_transform(modulated_signal)
 
@@ -16,7 +19,7 @@ def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
                                signal_max=max(modulated_signal.get_y()))
     Plotter.plot(discrete_signal, t_end=0.1)
 
-    detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=50)
+    detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=30)
     Plotter.plot(detected_signal, t_end=0.1)
     Plotter.fourier_transform(detected_signal)
 
@@ -38,9 +41,8 @@ def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
         k = k + 1
         if k == sig_out.__len__() - 1:
             break
-    print(detected_signal2.get_x()[k])
-
-    pyplot.plot(sig_out, '.')
+    print('delay: %f' % detected_signal2.get_x()[k])
+    pyplot.plot(detected_signal.get_x(), sig_out, '.')
     # pyplot.xlim(0, 1000)
     pyplot.show()
 
@@ -62,10 +64,20 @@ if __name__ == '__main__':
     original_signal = Sine(original_freq, amplitude=amplitude, t_start=t_start, t_end=t_end, discretization=10000)
     task1(original_signal, original_freq, carrier_freq, k=k)
 
-    noised_signal_1 = original_signal + Sine(noise_freq_1, amplitude=amplitude, t_start=t_start, t_end=t_end,
-                                             discretization=10000)
-    task1(noised_signal_1, original_freq, carrier_freq, k=k)
-
-    noised_signal2 = original_signal + Sine(noise_freq_2, amplitude=amplitude, t_start=t_start, t_end=t_end,
-                                            discretization=10000)
-    task1(noised_signal2, original_freq, carrier_freq, k=k)
+    task1(original_signal, original_freq, carrier_freq, k=k, noise_freq=noise_freq_1)
+    task1(original_signal, original_freq, carrier_freq, k=k, noise_freq=noise_freq_2)
+    # noised_signal_1 = original_signal + Sine(noise_freq_1, amplitude=amplitude, t_start=t_start, t_end=t_end,
+    #                                          discretization=10000)
+    # task1(noised_signal_1, original_freq, carrier_freq, k=k)
+    #
+    # modulated_signal = DoubleSideband(original_signal, carrier_freq)
+    # noised_signal_1_1 = modulated_signal + Sine(noise_freq_1, amplitude=amplitude, t_start=t_start, t_end=t_end,
+    #                                             discretization=10000)
+    # pyplot.plot(noised_signal_1_1.get_x(), noised_signal_1_1.get_y())
+    # pyplot.xlim(0, 0.1)
+    # pyplot.title("ZASHUMLENNYI")
+    # pyplot.show()
+    #
+    # noised_signal2 = original_signal + Sine(noise_freq_2, amplitude=amplitude, t_start=t_start, t_end=t_end,
+    #                                         discretization=10000)
+    # task1(noised_signal2, original_freq, carrier_freq, k=k)
