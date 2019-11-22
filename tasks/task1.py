@@ -4,25 +4,25 @@ from matplotlib import pyplot
 import numpy as np
 
 
-def task1(original_signal: Signal, original_freq, carrier_freq, k=64):
-    Plotter.plot(original_signal)
-    Plotter.fourier_transform(original_signal)
+def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None, k=64):
+    Plotter.plot(original_signal, _title_pref=global_pref)
+    Plotter.fourier_transform(original_signal, _title_pref=global_pref)
 
     modulated_signal = DoubleSideband(original_signal, carrier_freq)
-    Plotter.plot(modulated_signal, t_end=0.1)
-    Plotter.fourier_transform(modulated_signal)
+    Plotter.plot(modulated_signal, t_end=0.1, _title_pref=global_pref)
+    Plotter.fourier_transform(modulated_signal, _title_pref=global_pref)
 
     discrete_signal = Discrete(modulated_signal, k, signal_min=min(modulated_signal.get_y()),
                                signal_max=max(modulated_signal.get_y()))
-    Plotter.plot(discrete_signal, t_end=0.1)
+    Plotter.plot(discrete_signal, t_end=0.1, _title_pref=global_pref)
 
     detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=100)
-    Plotter.plot(detected_signal, t_end=0.1)
-    Plotter.fourier_transform(detected_signal)
+    Plotter.plot(detected_signal, t_end=0.1, _title_pref=global_pref)
+    Plotter.fourier_transform(detected_signal, _title_pref=global_pref)
 
     detected_signal2 = Detect(detected_signal, original_freq, filter_freq=1)
-    Plotter.plot(detected_signal2)
-    Plotter.fourier_transform(detected_signal2)
+    Plotter.plot(detected_signal2, _title_pref=global_pref)
+    Plotter.fourier_transform(detected_signal2, _title_pref=global_pref)
 
     lbound = 3
     sig_out = np.ones(len(detected_signal2.get_x()))
@@ -59,12 +59,12 @@ if __name__ == '__main__':
 
     ################ main part ####################
     original_signal = Sine(original_freq, amplitude=amplitude, t_start=t_start, t_end=t_end, discretization=10000)
-    task1(original_signal, original_freq, carrier_freq, k=k)
+    task1(original_signal, original_freq, carrier_freq, k=k, global_pref="Original")
 
     noised_signal_1 = original_signal + Sine(noise_freq_1, amplitude=amplitude, t_start=t_start, t_end=t_end,
                                              discretization=10000)
-    task1(noised_signal_1, original_freq, carrier_freq, k=k)
+    task1(noised_signal_1, original_freq, carrier_freq, k=k, global_pref="Noised 1")
 
     noised_signal2 = original_signal + Sine(noise_freq_2, amplitude=amplitude, t_start=t_start, t_end=t_end,
                                             discretization=10000)
-    task1(noised_signal2, original_freq, carrier_freq, k=k)
+    task1(noised_signal2, original_freq, carrier_freq, k=k, global_pref="Noised 2")

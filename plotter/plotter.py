@@ -6,17 +6,15 @@ from signals import signals
 
 class Plotter:
     @staticmethod
-    def plot(signal: signals.Signal, t_start=0, t_end=None, _title=None, x_label="time", y_label="V"):
+    def plot(signal: signals.Signal, t_start=0, t_end=None, _title_pref=None, _title=None, x_label="time", y_label="V"):
         fig = figure(dpi=200)
         splt = fig.add_subplot(111)
 
         if _title is None:
-            if isinstance(signal, signals.DoubleSideband):
-                _title = "Double Sideband"
-            elif isinstance(signal, signals.Detect):
-                _title = "Dected Signal"
-            else:
-                _title = "Signal"
+            _title = signal.title
+
+        if _title_pref is not None:
+            _title = "%s %s" % (_title_pref, _title)
 
         splt.set_title(_title)
         splt.set_xlabel(x_label)
@@ -26,7 +24,7 @@ class Plotter:
         fig.show()
 
     @staticmethod
-    def fourier_transform(signal: signals.Signal):
+    def fourier_transform(signal: signals.Signal, _title_pref=None):
         signal_fft = abs(fftshift(fft(signal.get_y())))
         signal_fft = 2 * signal_fft / len(signal_fft)
         f_fft = fftshift(fftfreq(len(signal.get_x()), abs(signal.get_x()[1] - signal.get_x()[0])))
@@ -42,5 +40,8 @@ class Plotter:
         print(f_fft[last_nonzero_index])
         splt.set_xlim(-f_fft[last_nonzero_index] - spacing, f_fft[last_nonzero_index] + spacing)
         splt.plot(f_fft, signal_fft)
-        splt.set_title("Fourier spectrum")
+        title = "%s Fourier spectrum" % signal.title
+        if _title_pref is not None:
+            title = "%s %s" % (_title_pref, title)
+        splt.set_title(title)
         fig.show()

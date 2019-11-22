@@ -6,6 +6,8 @@ class Signal:
     def __init__(self):
         self._t = self._get_time()
         self._cache = self._eval()
+        if not hasattr(self, "title"):
+            self.title = "Signal"
 
     def _get_time(self):
         return None
@@ -33,7 +35,7 @@ class Signal:
 
 
 class Sinusoidal(Signal):
-    def __init__(self, freq, amplitude, t_start, t_end, phase=0, discretization=500):
+    def __init__(self, freq, amplitude, t_start, t_end, phase=0, discretization=500, title=None):
         self.freq = freq
         self.amplitude = amplitude
         self.discretization = discretization
@@ -41,6 +43,11 @@ class Sinusoidal(Signal):
         self.sample_rate = 1 / self.discretization
         self.t_start = t_start
         self.t_end = t_end
+        if title is None:
+            self.title = "Sinusoidal"
+        else:
+            self.title = title
+
         super().__init__()
 
     def _get_time(self):
@@ -58,11 +65,16 @@ class Cosine(Sinusoidal):
 
 
 class DoubleSideband(Signal):
-    def __init__(self, signal: Sinusoidal, carrier_freq, m=1, carrier_phase=0):
+    def __init__(self, signal: Sinusoidal, carrier_freq, m=1, carrier_phase=0, title=None):
         self.signal = signal
         self.carrier_freq = carrier_freq
         self.carrier_phase = carrier_phase
         self.m = m
+        if title is None:
+            self.title = "DoubleSideband"
+        else:
+            self.title = title
+
         super().__init__()
 
     def _get_time(self):
@@ -80,11 +92,16 @@ class DoubleSideband(Signal):
 
 
 class Discrete(Signal):
-    def __init__(self, signal: Signal, level, signal_min=-1, signal_max=1):
+    def __init__(self, signal: Signal, level, signal_min=-1, signal_max=1, title=None):
         self.level = level
         self.signal_min = signal_min
         self.signal_max = signal_max
         self.signal = signal
+        if title is None:
+            self.title = "Discrete"
+        else:
+            self.title = title
+
         super().__init__()
 
     def _get_time(self):
@@ -97,11 +114,16 @@ class Discrete(Signal):
 
 
 class Detect(Signal):
-    def __init__(self, source: Signal, detect_freq, filter_freq):
+    def __init__(self, source: Signal, detect_freq, filter_freq, title=None):
         self.source = source
         self.detect_freq = detect_freq
         self.filter_freq = filter_freq
         self._t = source.get_x()
+        if title is None:
+            self.title = "Detect"
+        else:
+            self.title = title
+
         super().__init__()
 
     def _get_time(self):
