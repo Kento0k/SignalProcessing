@@ -2,6 +2,9 @@ from signals.signals import Signal, Sine, DoubleSideband, Discrete, Detect
 from plotter.plotter import Plotter
 from matplotlib import pyplot
 import numpy as np
+from scipy.fftpack import fft, fftshift, fftfreq
+from scipy.signal import find_peaks
+
 
 
 def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None, k=64, noise_freq=None):
@@ -15,6 +18,14 @@ def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None
     Plotter.plot(modulated_signal, t_end=0.1, _title_pref=global_pref)
     Plotter.fourier_transform(modulated_signal, _title_pref=global_pref)
 
+    signal_fft = abs(fftshift(fft(modulated_signal.get_y())))
+    signal_fft = 2 * signal_fft / len(signal_fft)
+    f_fft = fftshift(fftfreq(len(modulated_signal.get_x()), abs(modulated_signal.get_x()[1] - modulated_signal.get_x()[0])))
+    if noise_freq is None:
+        print(find_freqs(signal_fft[len(signal_fft) // 2 - 1:], f_fft[len(f_fft) // 2 - 1:], 3))
+    else:
+        print(find_freqs(signal_fft[len(signal_fft) // 2 - 1:], f_fft[len(f_fft) // 2 - 1:], 4))
+
     discrete_signal = Discrete(modulated_signal, k, signal_min=min(modulated_signal.get_y()),
                                signal_max=max(modulated_signal.get_y()))
     Plotter.plot(discrete_signal, t_end=0.1, _title_pref=global_pref)
@@ -22,6 +33,11 @@ def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None
     detected_signal = Detect(discrete_signal, carrier_freq, filter_freq=30)
     Plotter.plot(detected_signal, t_end=0.1, _title_pref=global_pref)
     Plotter.fourier_transform(detected_signal, _title_pref=global_pref)
+
+    signal_fft = abs(fftshift(fft(detected_signal.get_y())))
+    signal_fft = 2 * signal_fft / len(signal_fft)
+    f_fft = fftshift(fftfreq(len(detected_signal.get_x()), abs(detected_signal.get_x()[1] - detected_signal.get_x()[0])))
+    print(find_freqs(signal_fft[len(signal_fft) // 2 - 1:], f_fft[len(f_fft) // 2 - 1:], 2))
 
     detected_signal2 = Detect(detected_signal, original_freq, filter_freq=7)
     Plotter.plot(detected_signal2, _title_pref=global_pref)
@@ -45,6 +61,16 @@ def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None
     pyplot.plot(detected_signal.get_x(), sig_out, '.')
     # pyplot.xlim(0, 1000)
     pyplot.show()
+
+
+def find_freqs(spectrum, freq, freq_number):
+    peaks, _ = find_peaks(spectrum)
+    lst = []
+    for peak in peaks:
+        lst.append((peak, spectrum[peak]))
+    max_peaks = sorted(lst, key=lambda pair: pair[1])[-freq_number:]
+    i = [pair[0] for pair in max_peaks]
+    return freq[i]
 
 
 if __name__ == '__main__':
