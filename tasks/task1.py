@@ -6,7 +6,6 @@ from scipy.fftpack import fft, fftshift, fftfreq
 from scipy.signal import find_peaks
 
 
-
 def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None, k=64, noise_freq=None):
     Plotter.plot(original_signal, _title_pref=global_pref)
     Plotter.fourier_transform(original_signal, _title_pref=global_pref)
@@ -14,13 +13,14 @@ def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None
     modulated_signal = DoubleSideband(original_signal, carrier_freq)
     if noise_freq is not None:
         modulated_signal = modulated_signal + Sine(noise_freq, amplitude=amplitude, t_start=0, t_end=1,
-                                                discretization=10000)
+                                                   discretization=10000)
     Plotter.plot(modulated_signal, t_end=0.1, _title_pref=global_pref)
     Plotter.fourier_transform(modulated_signal, _title_pref=global_pref)
 
     signal_fft = abs(fftshift(fft(modulated_signal.get_y())))
     signal_fft = 2 * signal_fft / len(signal_fft)
-    f_fft = fftshift(fftfreq(len(modulated_signal.get_x()), abs(modulated_signal.get_x()[1] - modulated_signal.get_x()[0])))
+    f_fft = fftshift(
+        fftfreq(len(modulated_signal.get_x()), abs(modulated_signal.get_x()[1] - modulated_signal.get_x()[0])))
     if noise_freq is None:
         print(find_freqs(signal_fft[len(signal_fft) // 2 - 1:], f_fft[len(f_fft) // 2 - 1:], 3))
     else:
@@ -36,14 +36,15 @@ def task1(original_signal: Signal, original_freq, carrier_freq, global_pref=None
 
     signal_fft = abs(fftshift(fft(detected_signal.get_y())))
     signal_fft = 2 * signal_fft / len(signal_fft)
-    f_fft = fftshift(fftfreq(len(detected_signal.get_x()), abs(detected_signal.get_x()[1] - detected_signal.get_x()[0])))
+    f_fft = fftshift(
+        fftfreq(len(detected_signal.get_x()), abs(detected_signal.get_x()[1] - detected_signal.get_x()[0])))
     print(find_freqs(signal_fft[len(signal_fft) // 2 - 1:], f_fft[len(f_fft) // 2 - 1:], 2))
 
     detected_signal2 = Detect(detected_signal, original_freq, filter_freq=7)
     Plotter.plot(detected_signal2, _title_pref=global_pref)
     Plotter.fourier_transform(detected_signal2, _title_pref=global_pref)
 
-    lbound = max(detected_signal2.get_y()) / pow(10, 3/20)
+    lbound = max(detected_signal2.get_y()) / pow(10, 3 / 20)
     print("lbound: %d" % lbound)
     sig_out = np.ones(len(detected_signal2.get_x()))
     for i in range(0, len(detected_signal2.get_x())):
@@ -75,8 +76,8 @@ def find_freqs(spectrum, freq, freq_number):
 
 if __name__ == '__main__':
     ################ lab params #########################
-    original_freq = 19
-    carrier_freq = 650
+    original_freq = 14
+    carrier_freq = 383
     k = 1024
 
     ################ othe params ####################
